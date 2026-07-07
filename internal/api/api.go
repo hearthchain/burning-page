@@ -116,11 +116,11 @@ func (s *Server) preview(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, http.StatusOK, map[string]any{
-		"address":          addr,
-		"status":           "ok",
-		"layers":           perLayer,
-		"totalCreditMicro": total.String(),
-		"totalCredit":      microToDecimal(total),
+		"address":            addr,
+		"status":             "ok",
+		"layers":             perLayer,
+		"minimumCreditMicro": total.String(),
+		"minimumCredit":      microToDecimal(total),
 	})
 }
 
@@ -158,11 +158,11 @@ func (s *Server) address(w http.ResponseWriter, r *http.Request) {
 		sources = []string{}
 	}
 	writeJSON(w, http.StatusOK, map[string]any{
-		"hearthAddress":    hearth,
-		"totalCreditMicro": total.String(),
-		"totalCredit":      microToDecimal(total),
-		"bindings":         sources,
-		"burns":            burns,
+		"hearthAddress":      hearth,
+		"minimumCreditMicro": total.String(),
+		"minimumCredit":      microToDecimal(total),
+		"bindings":           sources,
+		"burns":              burns,
 	})
 }
 

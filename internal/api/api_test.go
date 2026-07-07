@@ -116,8 +116,8 @@ func TestBindingRoundTripAndAddressBalance(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, resp.StatusCode)
 
 	got := getJSON(t, srv.URL+"/api/address/"+id.hearth)
-	assert.Equal(t, "49713174000", got["totalCreditMicro"])
-	assert.Equal(t, "49713.174000", got["totalCredit"])
+	assert.Equal(t, "49713174000", got["minimumCreditMicro"])
+	assert.Equal(t, "49713.174000", got["minimumCredit"])
 	burns, ok := got["burns"].([]any)
 	require.True(t, ok)
 	require.Len(t, burns, 1)
@@ -142,7 +142,7 @@ func TestBindingRejectionsAndValidation(t *testing.T) {
 	// Unknown but checksum-valid hearth address: 200 with zeros.
 	stranger := newIdentity(t, "nobody bound me")
 	got := getJSON(t, srv.URL+"/api/address/"+stranger.hearth)
-	assert.Equal(t, "0", got["totalCreditMicro"])
+	assert.Equal(t, "0", got["minimumCreditMicro"])
 
 	// Broken checksum: 400.
 	respBad, err := http.Get(srv.URL + "/api/address/not-an-address")
@@ -163,7 +163,7 @@ func TestPreviewComputesLayersLive(t *testing.T) {
 	first, ok := layersList[0].(map[string]any)
 	require.True(t, ok)
 	assert.Equal(t, "2022-04-03", first["weekEnd"])
-	assert.Equal(t, "49713174000", got["totalCreditMicro"])
+	assert.Equal(t, "49713174000", got["minimumCreditMicro"])
 
 	respBad, err := http.Get(srv.URL + "/api/preview/waves/garbage")
 	require.NoError(t, err)
@@ -236,7 +236,7 @@ func TestAddressShowsPendingBurnsWithoutCredit(t *testing.T) {
 	}))
 
 	got := getJSON(t, srv.URL+"/api/address/"+id.hearth)
-	assert.Equal(t, "49713174000", got["totalCreditMicro"], "pending burns do not add credit")
+	assert.Equal(t, "49713174000", got["minimumCreditMicro"], "pending burns do not add credit")
 
 	burns, ok := got["burns"].([]any)
 	require.True(t, ok)
