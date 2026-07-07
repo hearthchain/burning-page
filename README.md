@@ -12,7 +12,7 @@ The backend is a cache, never an authority: every number is recomputable from pu
 
 Single Go monorepo. First chain is Waves; the other nine plug in later through the chain-adapter interface.
 
-- `cmd/api`: read API plus binding submission (chi or stdlib http)
+- `cmd/api`: read API plus binding submission (stdlib net/http)
 - `cmd/watcher`: per-chain burn detection, address history extraction, layer reconstruction (one process per chain)
 - `cmd/snapshot`: deterministic credit computation, evidence bundles, Merkle root, reproduction CLI
 - `internal/chain`: `ChainAdapter` interface (`DetectBurns(window)`, `History(address)`, `VerifyBindingSignature(msg, sig, address)`); one package per chain, `internal/chain/waves` first (gowaves client + crypto)
@@ -21,24 +21,23 @@ Single Go monorepo. First chain is Waves; the other nine plug in later through t
 - `internal/bindings`: registry of source-address to Hearth-address bindings
 - `web/`: static HTML plus a little TypeScript for wallet integration and client-side Hearth address generation; five pages per the site map: `/`, `/a/<address>`, `/burn`, `/burn/<chain>`, `/disputes`
 
-Storage is SQLite.
+Storage is append-only JSONL artifacts plus in-memory indexes rebuilt on start; no database (see [`docs/architecture.md`](docs/architecture.md)).
 
 ## Binding a burn to a Hearth address
 
-Two paths are supported; the decision on their long-term status is tracked in the spec. The MVP ships both for Waves.
+The burn itself is a plain transfer to the published burn address, with no payload. The user then binds the source address to a Hearth address in the cabinet by submitting a message signed with the source address's key; signed bindings are published in the evidence bundles. One source address maps to exactly one Hearth address: when several signed bindings exist, the latest one at snapshot freeze wins. Burns from addresses without a binding wait in the journal until a binding arrives.
 
-1. Payload in the burn transaction: `HRTH1:<address>:<checksum>` in the chain's native data field. Self-contained, no further action.
-2. Cabinet binding: a plain burn to the published burn address, then the user binds the source address to a Hearth address by a message signed with the source address key. Signed bindings are published in the evidence bundles.
+## Milestones (Waves mainnet)
 
-## MVP plan (Waves)
+1. Foundation: price-journal artifact, published burn address, binding message format.
+2. Watcher: mainnet burn detection, history, layers, double-source cross-check against two independent public nodes, golden tests on recorded fixtures.
+3. Credit engine, evidence bundles, bindings registry, snapshot with Merkle root, read/preview API.
+4. Web: front page with live counters, address cabinet, `/burn/waves` constructor, binding submission (out of scope for the current plan).
 
-1. Price-journal artifact, published burn address, binding message format.
-2. Waves watcher: burn detection, history, layers, double-source cross-check against two independent public nodes, golden tests on recorded fixtures.
-3. Credit engine, evidence bundles, preview API.
-4. Web: front page with live counters, address cabinet, `/burn/waves` constructor (Keeper Wallet plus manual path), binding submission.
-
-Then a testnet dry run, then wave-2 chains via the adapter interface.
+Milestones 1-3 are specified in [`docs/architecture.md`](docs/architecture.md). Wave-2 chains follow via the adapter interface.
 
 ## Development
 
 Go 1.25.x. Run tests with `go test ./...`. No secrets in the repo. Commits only from the `swell-a2a` identity.
+
+Limitations: MVP balance-history support covers transfer-like transactions only (Genesis, Payment, Transfer, MassTransfer); an address whose history contains any other type (lease, DEX, invoke) is flagged unsupported and blocked to manual review rather than risking a wrong credit. Expanding coverage (lease first) is a deliberate wave-2 work item.

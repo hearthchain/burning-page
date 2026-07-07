@@ -2,11 +2,22 @@
 bin/
 dist/
 *.exe
+coverage.out
+
+# runtime artifacts (reproducible from chain + journal; journal itself is committed)
+data/*
+!data/journal/
+
+# local config (window heights and burn address are ceremony outputs)
+config.json
 
 # local state
 *.db
 *.sqlite
 .env
+
+# scratch (go run -tags=scratch ./test.go)
+test.go
 
 # editor
 .idea/
