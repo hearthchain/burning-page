@@ -115,8 +115,10 @@ linters:
           - bodyclose
           - dupl
           - funlen
+          - gochecknoglobals
           - goconst
           - gosec
+          - lll
           - noctx
 
 formatters:
