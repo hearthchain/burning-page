@@ -61,3 +61,30 @@ func TestVerifyRejectsWrongKeyCorruptSignatureAndBadHearth(t *testing.T) {
 	}
 	assert.Error(t, binding.Verify(source, badHearth, 'H', pub.String(), sig.String()))
 }
+
+func TestVerifyKeeperV1AcceptsEnvelopeSignature(t *testing.T) {
+	sec, pub, source, hearth := testKeys(t)
+	sig, err := crypto.Sign(sec, binding.KeeperV1Envelope(binding.Message(source, hearth)))
+	require.NoError(t, err)
+
+	assert.NoError(t, binding.VerifyKeeperV1(source, hearth, 'H', pub.String(), sig.String()))
+}
+
+func TestRawAndKeeperFormatsDoNotCrossAccept(t *testing.T) {
+	sec, pub, source, hearth := testKeys(t)
+
+	rawSig, err := crypto.Sign(sec, binding.Message(source, hearth))
+	require.NoError(t, err)
+	envSig, err := crypto.Sign(sec, binding.KeeperV1Envelope(binding.Message(source, hearth)))
+	require.NoError(t, err)
+
+	assert.ErrorIs(t, binding.VerifyKeeperV1(source, hearth, 'H', pub.String(), rawSig.String()), binding.ErrBadSignature,
+		"a raw signature must not pass as a Keeper envelope one")
+	assert.ErrorIs(t, binding.Verify(source, hearth, 'H', pub.String(), envSig.String()), binding.ErrBadSignature,
+		"a Keeper envelope signature must not pass as a raw one")
+}
+
+func TestKeeperV1EnvelopeLayout(t *testing.T) {
+	got := binding.KeeperV1Envelope([]byte("abc"))
+	assert.Equal(t, []byte{255, 255, 255, 1, 'a', 'b', 'c'}, got)
+}

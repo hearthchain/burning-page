@@ -25,10 +25,28 @@ func Message(source, hearth string) []byte {
 	return []byte("hearth-genesis-binding:v1:" + source + ":" + hearth)
 }
 
+// KeeperV1Envelope wraps the canonical message the way Keeper Wallet's
+// signCustomData version 1 does before signing: [255,255,255,1] ++ payload.
+// The wallet signs this envelope with the account's own key, so the seed
+// phrase never leaves the extension.
+func KeeperV1Envelope(msg []byte) []byte {
+	return append([]byte{0xff, 0xff, 0xff, 0x01}, msg...)
+}
+
 // Verify checks a submitted binding: the hearth address is well-formed under
 // hearthScheme, the public key derives exactly the claimed source address on
 // Waves mainnet, and the signature covers the canonical message.
 func Verify(source, hearth string, hearthScheme byte, publicKeyB58, signatureB58 string) error {
+	return verifyOver(Message(source, hearth), source, hearth, hearthScheme, publicKeyB58, signatureB58)
+}
+
+// VerifyKeeperV1 checks a binding signed by Keeper Wallet's signCustomData
+// version 1: the same canonical message inside the Keeper envelope.
+func VerifyKeeperV1(source, hearth string, hearthScheme byte, publicKeyB58, signatureB58 string) error {
+	return verifyOver(KeeperV1Envelope(Message(source, hearth)), source, hearth, hearthScheme, publicKeyB58, signatureB58)
+}
+
+func verifyOver(signed []byte, source, hearth string, hearthScheme byte, publicKeyB58, signatureB58 string) error {
 	if err := hearthaddr.Validate(hearth, hearthScheme); err != nil {
 		return err
 	}
@@ -47,7 +65,7 @@ func Verify(source, hearth string, hearthScheme byte, publicKeyB58, signatureB58
 	if err != nil {
 		return fmt.Errorf("binding: bad signature encoding: %w", err)
 	}
-	if !crypto.Verify(pub, sig, Message(source, hearth)) {
+	if !crypto.Verify(pub, sig, signed) {
 		return ErrBadSignature
 	}
 	return nil
