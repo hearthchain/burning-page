@@ -36,6 +36,10 @@ The burn itself is a plain transfer to the published burn address, with no paylo
 
 Milestones 1-3 are specified in [`docs/architecture.md`](docs/architecture.md). Wave-2 chains follow via the adapter interface.
 
+## Deploying the site
+
+`.github/workflows/pages.yml` deploys `web/` to GitHub Pages on every push to `develop` that touches `web/**` (plus manual dispatch). One-time repo settings, not covered by the workflow: set the custom domain `genesis.hearth.tech` in Settings → Pages (with Actions deploys the `web/CNAME` file alone does not apply it), allow `develop` in the `github-pages` environment's deployment-branch rules, and point DNS (`genesis` CNAME to `hearthchain.github.io`) when going live; HTTPS provisions only after DNS resolves. The frontend's API base is the single constant in `web/assets/js/config.js` (empty = same-origin `/api`); until the API is publicly hosted the site degrades to placeholders gracefully.
+
 ## Development
 
 Go 1.25.x. Run tests with `go test ./...`. No secrets in the repo. Commits only from the `swell-a2a` identity.
