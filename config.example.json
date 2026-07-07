@@ -1,0 +1,16 @@
+{
+  "nodes": {
+    "primary": "https://nodes.wavesnodes.com",
+    "secondary": "https://nodes.wx.network"
+  },
+  "burnAddress": "",
+  "window": {
+    "startHeight": 0,
+    "endHeight": 0
+  },
+  "confirmations": 100,
+  "dataDir": "data",
+  "journalCSV": "data/journal/waves.csv",
+  "listenAddr": ":8080",
+  "hearthScheme": "H"
+}

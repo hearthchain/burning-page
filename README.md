@@ -39,3 +39,5 @@ Milestones 1-3 are specified in [`docs/architecture.md`](docs/architecture.md). 
 ## Development
 
 Go 1.25.x. Run tests with `go test ./...`. No secrets in the repo. Commits only from the `swell-a2a` identity.
+
+Limitations: MVP balance-history support covers transfer-like transactions only (Genesis, Payment, Transfer, MassTransfer); an address whose history contains any other type (lease, DEX, invoke) is flagged unsupported and blocked to manual review rather than risking a wrong credit. Expanding coverage (lease first) is a deliberate wave-2 work item.

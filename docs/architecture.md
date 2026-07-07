@@ -16,7 +16,7 @@ Selected:
 
 | Choice | Role | Stars | Activity | Why |
 |---|---|---|---|---|
-| github.com/wavesplatform/gowaves | Waves crypto (Curve25519 signatures, base58 addresses, blake2b/keccak checksums), node REST client, tx types | 254 | v0.10.6, pushed 2026-07-07 | official Go node implementation; we never hand-roll Waves crypto; also the code-style reference |
+| github.com/wavesplatform/gowaves | Waves crypto (Curve25519 signatures, base58 addresses, blake2b/keccak checksums), node REST client, tx types | 254 | v0.11.1, pushed 2026-07-07 | official Go node implementation; we never hand-roll Waves crypto; also the code-style reference |
 | Go stdlib net/http | API | - | - | two GET endpoints and one POST need no framework |
 | Go stdlib crypto/sha256 | Merkle tree, artifact checksums | - | - | ~30 lines, no dependency |
 
