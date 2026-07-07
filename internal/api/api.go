@@ -34,6 +34,7 @@ const (
 	maxBindingBodyBytes   = 4 << 10
 	microPerCredit        = 1_000_000
 	creditBase            = 10
+	statusConfirmed       = "confirmed" // terminal burn status in burns.jsonl
 )
 
 // Node is the read surface the preview endpoint needs.
@@ -70,6 +71,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/preview/waves/{address}", s.preview)
 	mux.HandleFunc("GET /api/address/{hearth}", s.address)
 	mux.HandleFunc("POST /api/bindings", s.postBinding)
+	mux.HandleFunc("GET /api/stats", s.stats)
 	mux.HandleFunc("GET /bind", func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		_, _ = w.Write(bindPage)
@@ -141,7 +143,7 @@ func (s *Server) address(w http.ResponseWriter, r *http.Request) {
 		if b.Hearth != hearth {
 			continue
 		}
-		burns = append(burns, confirmedBurnView{Bundle: b, Status: "confirmed"})
+		burns = append(burns, confirmedBurnView{Bundle: b, Status: statusConfirmed})
 		c, ok := new(big.Int).SetString(b.CreditMicro, creditBase)
 		if ok {
 			total.Add(total, c)
@@ -211,7 +213,7 @@ func (s *Server) pendingBurns(hearth string) ([]any, error) {
 	}
 	var out []any
 	for _, r := range latest {
-		if r.Status == "confirmed" {
+		if r.Status == statusConfirmed {
 			continue
 		}
 		bound, ok := s.registry.HearthFor(r.Source)
