@@ -6,6 +6,7 @@ package api
 
 import (
 	"context"
+	_ "embed"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -56,12 +57,19 @@ func New(node Node, j *journal.Journal, reg *bindings.Registry, cfg config.Confi
 	}
 }
 
+//go:embed bind.html
+var bindPage []byte
+
 // Handler returns the HTTP handler with all routes registered.
 func (s *Server) Handler() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /api/preview/waves/{address}", s.preview)
 	mux.HandleFunc("GET /api/address/{hearth}", s.address)
 	mux.HandleFunc("POST /api/bindings", s.postBinding)
+	mux.HandleFunc("GET /bind", func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		_, _ = w.Write(bindPage)
+	})
 	return mux
 }
 

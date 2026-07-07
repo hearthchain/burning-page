@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
@@ -176,4 +177,46 @@ func getJSON(t *testing.T, url string) map[string]any {
 	var out map[string]any
 	require.NoError(t, json.NewDecoder(resp.Body).Decode(&out))
 	return out
+}
+
+func TestBindPageIsServed(t *testing.T) {
+	id := newIdentity(t, "api test burner")
+	srv := newServer(t, id)
+
+	resp, err := http.Get(srv.URL + "/bind")
+	require.NoError(t, err)
+	t.Cleanup(func() { _ = resp.Body.Close() })
+	require.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Contains(t, resp.Header.Get("Content-Type"), "text/html")
+
+	body, err := io.ReadAll(resp.Body)
+	require.NoError(t, err)
+	assert.Contains(t, string(body), "KeeperWallet", "the page drives the Keeper extension")
+	assert.Contains(t, string(body), "hearth-genesis-binding:v1", "the canonical message prefix is baked in")
+	assert.Contains(t, string(body), "keeper-v1", "submissions carry the envelope format")
+}
+
+func TestKeeperFormatBindingAccepted(t *testing.T) {
+	id := newIdentity(t, "api keeper burner")
+	srv := newServer(t, id)
+
+	sec, _, err := crypto.GenerateKeyPair([]byte("api keeper burner"))
+	require.NoError(t, err)
+	sig, err := crypto.Sign(sec, binding.KeeperV1Envelope(binding.Message(id.source, id.hearth)))
+	require.NoError(t, err)
+
+	body := `{"source":"` + id.source + `","hearth":"` + id.hearth + `","publicKey":"` + id.pub +
+		`","signature":"` + sig.String() + `","format":"keeper-v1"}`
+	resp, err := http.Post(srv.URL+"/api/bindings", "application/json", strings.NewReader(body))
+	require.NoError(t, err)
+	t.Cleanup(func() { _ = resp.Body.Close() })
+	assert.Equal(t, http.StatusCreated, resp.StatusCode)
+
+	// The same envelope signature without the format marker must be rejected.
+	rawBody := `{"source":"` + id.source + `","hearth":"` + id.hearth + `","publicKey":"` + id.pub +
+		`","signature":"` + sig.String() + `"}`
+	resp2, err := http.Post(srv.URL+"/api/bindings", "application/json", strings.NewReader(rawBody))
+	require.NoError(t, err)
+	t.Cleanup(func() { _ = resp2.Body.Close() })
+	assert.Equal(t, http.StatusUnauthorized, resp2.StatusCode)
 }
