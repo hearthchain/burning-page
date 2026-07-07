@@ -63,16 +63,11 @@
   </div>
 </section>
 
-<!-- THE TEN CHAINS -->
+<!-- THE CHAINS -->
 <section id="chains">
-  <div class="container section-pad">
-    <div class="sec-head">
-      <p class="label">Start a burn</p>
-      <h2 class="h2">Which chain do you hold?</h2>
-      <p class="sec-intro">Networks that ranked among crypto's largest at their peak and never found their second act. Waves is live first; other lanes open during the window, each with its target published before it opens.</p>
-      <p class="micro" style="margin-top: 14px;">Burn window: August–September 2026 (provisional, final dates announced on this page in advance). Mainnet: October 2026.</p>
-    </div>
-    <div class="grid cols-3">
+  <div class="container section-pad" style="padding-top: 32px;">
+    <p class="label" style="text-align: center;">Start a burn · which chain do you hold?</p>
+    <div class="grid cols-3" style="margin-top: 24px;">
       <a class="card" href="burn/waves/">
         <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px;">
           <p class="label">Waves</p><span class="pill pill-solid">Live</span>
@@ -95,9 +90,7 @@
         <span class="goto">hearth.tech →</span>
       </a>
     </div>
-    <div class="notice" style="margin: 40px auto 0; max-width: 640px; padding: 18px 22px;">
-      <p style="margin: 0; font-size: .9rem; line-height: 1.6;">Never burn straight from an exchange; withdraw to your own address first.</p>
-    </div>
+    <p class="micro" style="text-align: center; margin: 26px 0 0;">Burn window: August–September 2026 (provisional, final dates announced here in advance) · Mainnet: October 2026 · Never burn straight from an exchange; withdraw to your own address first.</p>
   </div>
 </section>
 
@@ -143,24 +136,7 @@
       <p style="font-family: var(--mono); font-size: .8rem; line-height: 1.8; color: var(--muted); margin: 14px 0 0;">1,000 WAVES held since March 2022 → peak week $49.71 → 49,710 HRTH<br>the same 1,000 WAVES bought in early 2024 → $4.00 → 4,000 HRTH</p>
     </div>
     <p style="text-align: center; font-size: .9rem; color: var(--muted); max-width: 640px; margin: 26px auto 0; line-height: 1.65;">Until the snapshot freezes, the figure is a minimum: the best-week price can only grow. The published rule is integer arithmetic with truncation, so anyone can recompute every credit to the last digit.</p>
-  </div>
-</section>
-
-<!-- ARTIFACTS -->
-<section>
-  <div class="container section-pad">
-    <div class="sec-head">
-      <p class="label">Artifacts</p>
-      <h2 class="h2">Trust the files, not the site.</h2>
-      <p class="sec-intro">The backend is a cache. The burn log, the binding registry, the weekly price journal, and the snapshot with its Merkle root are append-only artifacts, published with checksums and a reproduction script at snapshot freeze.</p>
-    </div>
-    <ul class="list" style="max-width: 640px; margin-left: auto; margin-right: auto;">
-      <li><span class="dash">–</span><span><span class="addr">burns.jsonl</span>: every detected burn with its lifecycle status.</span></li>
-      <li><span class="dash">–</span><span><span class="addr">bindings.jsonl</span>: every signed source-to-Hearth binding, latest per source wins.</span></li>
-      <li><span class="dash">–</span><span><span class="addr">waves.csv</span>: the canonical weekly price journal the credits are priced from.</span></li>
-      <li><span class="dash">–</span><span><span class="addr">snapshot.json</span>: per-address credits and the Merkle root, recomputable by anyone.</span></li>
-    </ul>
-    <p style="text-align: center; margin-top: 30px;"><a class="btn btn-gray" href="https://github.com/hearthchain/burning-page">Pipeline source on GitHub</a></p>
+    <p class="micro" style="text-align: center; max-width: 640px; margin: 18px auto 0;">Trust the files, not the site: the burn log, binding registry, price journal, and snapshot with its Merkle root are published as append-only artifacts with a reproduction script, from the <a href="https://github.com/hearthchain/burning-page">pipeline repository</a>.</p>
   </div>
 </section>
 
