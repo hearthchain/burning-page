@@ -35,10 +35,17 @@ type canonicalTx struct {
 	} `json:"transfers"`
 }
 
+// Node is the read surface CrossCheck needs from the secondary source; both
+// *Client and test or fixture fakes satisfy it.
+type Node interface {
+	Height(ctx context.Context) (uint64, error)
+	TransactionInfo(ctx context.Context, id string) (json.RawMessage, error)
+}
+
 // CrossCheck re-fetches a burn from the secondary node and compares the
 // canonical fields. A lagging secondary is not a mismatch: the burn stays
 // pending and is retried on the next poll.
-func CrossCheck(ctx context.Context, secondary *Client, burn chain.Burn, confirmations uint64) (Verdict, error) {
+func CrossCheck(ctx context.Context, secondary Node, burn chain.Burn, confirmations uint64) (Verdict, error) {
 	tip, err := secondary.Height(ctx)
 	if err != nil {
 		return Verdict{}, err
