@@ -23,7 +23,7 @@
       <span style="font-family: var(--mono); font-size: .66rem; color: var(--muted); letter-spacing: .12em; margin-top: 4px;">GENESIS</span>
     </a>
     <div class="nav-links">
-      <a href="burn/">Burn</a>
+      <a href="#chains">Burn</a>
       <a href="a/">Cabinet</a>
       <a href="disputes/">Disputes</a>
       <a class="gh" href="https://hearth.tech">hearth.tech</a>
@@ -33,41 +33,24 @@
 
 <main>
 
-<!-- HERO -->
-<section>
-  <div class="container section-pad" style="text-align: center;">
-    <svg viewBox="0 0 64 64" width="76" height="76" aria-hidden="true" style="display: block; margin: 0 auto;">
-      <g fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round">
-        <path d="M7 13 H57"></path><path d="M13 13 V55"></path><path d="M51 13 V55"></path><path d="M7 55 H57"></path>
-      </g>
-      <path fill="var(--fire)" d="M32 26 C26 34 22.8 40 26.2 46.2 A6.9 6.9 0 0 0 37.8 46.2 C41.2 40 38 34 32 26 Z"></path>
-    </svg>
-    <h1>Burn a fallen chain.<br>Light the new one.</h1>
-    <p style="font-size: 1.06rem; line-height: 1.65; color: var(--muted); max-width: 560px; margin: 18px auto 0;">Genesis HRTH is claimed one way: by provably burning the coins of ten fallen L1 networks. Your loyalty to a chain that faded converts into a share of the new network, priced at the best week you ever held through.</p>
-    <div style="display: flex; gap: 14px; flex-wrap: wrap; align-items: center; justify-content: center; margin-top: 32px;">
-      <a class="btn btn-primary" href="burn/">Start a burn</a>
-      <a class="btn btn-gray" href="a/">Open your cabinet →</a>
-    </div>
-    <p style="font-size: .82rem; color: var(--muted); margin: 24px 0 0; display: flex; align-items: center; justify-content: center; gap: 8px;">
-      <span class="dot" aria-hidden="true" style="animation: blink 2.4s ease-in-out infinite;"></span>
-      Burn window: August–September 2026 (provisional) · Mainnet: October 2026
-    </p>
-  </div>
-</section>
-
 <!-- LIVE COUNTERS -->
 <section style="background: var(--panel);">
   <div class="container section-pad">
     <div class="sec-head">
-      <p class="label">The ledger so far</p>
-      <h2 class="h2">Every figure below is recomputable.</h2>
-      <p class="sec-intro">This site is never authoritative: the chains and the published artifacts are. Counters refresh every minute from the public read API.</p>
+      <p class="label">Genesis by fire</p>
+      <h2 class="h2">Burn a fallen chain. Light the new one.</h2>
+      <p class="sec-intro">Burn window: August–September 2026 (provisional) · Mainnet: October 2026. Every figure below refreshes from the public read API and is recomputable from chain data plus the published artifacts; the site is never authoritative.</p>
     </div>
     <div class="glance" style="margin-top: 44px;">
       <div class="glance-item">
+        <p class="label" style="font-size: .66rem;">Value burned, $ minimum</p>
+        <p class="stat" id="stat-usd">·</p>
+        <p class="stat-sub">by the published max-week formula; grows until the snapshot freezes</p>
+      </div>
+      <div class="glance-item">
         <p class="label" style="font-size: .66rem;">HRTH at genesis, minimum</p>
         <p class="stat" id="stat-credit">·</p>
-        <p class="stat-sub">grows until snapshot freeze, never shrinks</p>
+        <p class="stat-sub">credit converts to HRTH one to one</p>
       </div>
       <div class="glance-item">
         <p class="label" style="font-size: .66rem;">WAVES burned</p>
@@ -77,12 +60,7 @@
       <div class="glance-item">
         <p class="label" style="font-size: .66rem;">Hearth addresses credited</p>
         <p class="stat" id="stat-participants">·</p>
-        <p class="stat-sub">the cabinet is the address, no accounts</p>
-      </div>
-      <div class="glance-item">
-        <p class="label" style="font-size: .66rem;">Bound source addresses</p>
-        <p class="stat" id="stat-bindings">·</p>
-        <p class="stat-sub">one signed statement per source</p>
+        <p class="stat-sub" id="stat-bindings-sub">the cabinet is the address, no accounts</p>
       </div>
     </div>
     <p class="micro" id="stat-root" style="margin-top: 28px; word-break: break-all;"></p>
@@ -92,58 +70,13 @@
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
-<section>
-  <div class="container section-pad">
-    <div class="sec-head">
-      <p class="label">How it works</p>
-      <h2 class="h2">Four steps, none of them an account.</h2>
-      <p class="sec-intro">No registration, no custody, no personal data. The site never touches keys and never accepts funds; every signature happens in your own wallet.</p>
-    </div>
-    <div class="grid cols-2">
-      <div class="card">
-        <p class="label">01 · Get a Hearth address</p>
-        <p class="body">Generate a Hearth address locally with the open-source console tooling in the <a href="https://github.com/hearthchain/burning-page">repository</a>. It is a new format: it cannot be derived from your old keys, and its seed never leaves your machine. In-browser generation ships before the window opens.</p>
-      </div>
-      <div class="card">
-        <p class="label">02 · Bind your source address</p>
-        <p class="body">In the cabinet, sign one short statement with the wallet of the address you will burn from. That binds every burn from that source to your Hearth address. We never ask for a seed phrase; signing happens only inside your wallet extension.</p>
-      </div>
-      <div class="card">
-        <p class="label">03 · Burn</p>
-        <p class="body">Send a plain transfer to the published burn address of the chain: no memo, no payload, any amount, any time before the window closes. The burn address is provably unspendable; the coins are gone for good.</p>
-      </div>
-      <div class="card">
-        <p class="label">04 · Watch it confirm</p>
-        <p class="body">Watchers on two independent public nodes pick the burn up within minutes. It shows in your cabinet immediately, and is credited once it reaches confirmation depth and both nodes agree.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- FORMULA -->
-<section style="background: var(--panel);">
-  <div class="container section-pad">
-    <div class="sec-head">
-      <p class="label">Crediting</p>
-      <h2 class="h2">Priced at the best week you held through.</h2>
-    </div>
-    <div class="notice" style="margin: 40px auto 0; max-width: 640px; padding: 22px 26px;">
-      <p class="label">The formula</p>
-      <p style="font-size: .92rem; line-height: 1.65; margin: 12px 0 0;">Credit = amount burned × the coin's highest weekly average price over the period you continuously held it, from a published CoinMarketCap-based price log. Your history is split into layers by minimum balance: each top-up starts a new layer with its own date, each sale shaves layers down. Held through the whole fall: credited near the top. Bought recently: credited at recent prices. 1 credit = 1 HRTH.</p>
-      <p style="font-family: var(--mono); font-size: .8rem; line-height: 1.8; color: var(--muted); margin: 14px 0 0;">1,000 WAVES held since March 2022 → peak week $49.71 → 49,710 HRTH<br>the same 1,000 WAVES bought in early 2024 → $4.00 → 4,000 HRTH</p>
-    </div>
-    <p style="text-align: center; font-size: .9rem; color: var(--muted); max-width: 640px; margin: 26px auto 0; line-height: 1.65;">Until the snapshot freezes, the figure in your cabinet is a minimum: the weekly maximum can only grow. The published rule is integer arithmetic with truncation, so anyone can recompute every credit to the last digit.</p>
-  </div>
-</section>
-
 <!-- THE TEN CHAINS -->
-<section>
+<section id="chains">
   <div class="container section-pad">
     <div class="sec-head">
-      <p class="label">The fallen chains</p>
-      <h2 class="h2">Ten chains, one last purpose.</h2>
-      <p class="sec-intro">Networks that ranked among crypto's largest at their peak and never found their second act. Waves is live first; the other lanes open during the window, each with its exact target published here before it opens.</p>
+      <p class="label">Start a burn</p>
+      <h2 class="h2">Which chain do you hold?</h2>
+      <p class="sec-intro">Ten networks that ranked among crypto's largest at their peak and never found their second act. Waves is live first; every other lane opens during the window, each with its exact target published on its page before it opens.</p>
     </div>
     <div class="grid cols-3">
       <a class="card" href="burn/waves/">
@@ -223,8 +156,53 @@
   </div>
 </section>
 
-<!-- ARTIFACTS -->
+<!-- HOW IT WORKS -->
+<section>
+  <div class="container section-pad">
+    <div class="sec-head">
+      <p class="label">How it works</p>
+      <h2 class="h2">Four steps, none of them an account.</h2>
+      <p class="sec-intro">No registration, no custody, no personal data. The site never touches keys and never accepts funds; every signature happens in your own wallet.</p>
+    </div>
+    <div class="grid cols-2">
+      <div class="card">
+        <p class="label">01 · Get a Hearth address</p>
+        <p class="body">Generate a Hearth address locally with the open-source console tooling in the <a href="https://github.com/hearthchain/burning-page">repository</a>. It is a new format: it cannot be derived from your old keys, and its seed never leaves your machine. In-browser generation ships before the window opens.</p>
+      </div>
+      <div class="card">
+        <p class="label">02 · Bind your source address</p>
+        <p class="body">In the cabinet, sign one short statement with the wallet of the address you will burn from. That binds every burn from that source to your Hearth address. We never ask for a seed phrase; signing happens only inside your wallet extension.</p>
+      </div>
+      <div class="card">
+        <p class="label">03 · Burn</p>
+        <p class="body">Send a plain transfer to the published burn address of the chain: no memo, no payload, any amount, any time before the window closes. The burn address is provably unspendable; the coins are gone for good.</p>
+      </div>
+      <div class="card">
+        <p class="label">04 · Watch it confirm</p>
+        <p class="body">Watchers on two independent public nodes pick the burn up within minutes. It shows in your cabinet immediately, and is credited once it reaches confirmation depth and both nodes agree.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FORMULA -->
 <section style="background: var(--panel);">
+  <div class="container section-pad">
+    <div class="sec-head">
+      <p class="label">Crediting</p>
+      <h2 class="h2">Priced at the best week you held through.</h2>
+    </div>
+    <div class="notice" style="margin: 40px auto 0; max-width: 640px; padding: 22px 26px;">
+      <p class="label">The formula</p>
+      <p style="font-size: .92rem; line-height: 1.65; margin: 12px 0 0;">Credit = amount burned × the coin's highest weekly average price over the period you continuously held it, from a published CoinMarketCap-based price log. Your history is split into layers by minimum balance: each top-up starts a new layer with its own date, each sale shaves layers down. Held through the whole fall: credited near the top. Bought recently: credited at recent prices. 1 credit = 1 HRTH.</p>
+      <p style="font-family: var(--mono); font-size: .8rem; line-height: 1.8; color: var(--muted); margin: 14px 0 0;">1,000 WAVES held since March 2022 → peak week $49.71 → 49,710 HRTH<br>the same 1,000 WAVES bought in early 2024 → $4.00 → 4,000 HRTH</p>
+    </div>
+    <p style="text-align: center; font-size: .9rem; color: var(--muted); max-width: 640px; margin: 26px auto 0; line-height: 1.65;">Until the snapshot freezes, the figure in your cabinet is a minimum: the weekly maximum can only grow. The published rule is integer arithmetic with truncation, so anyone can recompute every credit to the last digit.</p>
+  </div>
+</section>
+
+<!-- ARTIFACTS -->
+<section>
   <div class="container section-pad">
     <div class="sec-head">
       <p class="label">Artifacts</p>
