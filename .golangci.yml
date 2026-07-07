@@ -33,7 +33,7 @@ linters:
     - gocyclo
     - godot
     - gomoddirectives
-    - gomodguard
+    - gomodguard_v2
     - goprintffuncname
     - gosec
     - govet
@@ -100,7 +100,7 @@ settings:
   nolintlint:
     require-explanation: true
     require-specific: true
-  gomodguard:
+  gomodguard_v2:
     blocked:
       modules:
         - github.com/golang/protobuf:

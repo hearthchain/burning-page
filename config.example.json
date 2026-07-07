@@ -3,7 +3,7 @@
     "primary": "https://nodes.wavesnodes.com",
     "secondary": "https://nodes.wx.network"
   },
-  "burnAddress": "",
+  "burnAddress": "3PHearthBurnXXXXXXXXXXXXXXXXXZgJXd1",
   "window": {
     "startHeight": 0,
     "endHeight": 0

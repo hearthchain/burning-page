@@ -1,0 +1,90 @@
+package crypto
+
+import (
+	"bytes"
+	"encoding/binary"
+	"fmt"
+
+	"github.com/consensys/gnark-crypto/ecc"
+	"github.com/consensys/gnark-crypto/ecc/bn254/fr"
+	gnark "github.com/consensys/gnark/backend/groth16"
+	"github.com/consensys/gnark/backend/witness"
+	gnarkLog "github.com/consensys/gnark/logger"
+	"github.com/pkg/errors"
+
+	bls12381 "github.com/wavesplatform/gowaves/pkg/crypto/internal/groth16/bls12_381"
+	"github.com/wavesplatform/gowaves/pkg/crypto/internal/groth16/bn256"
+)
+
+const (
+	sizeUint64 = 8
+)
+
+// Disable gnark logger because this lib use global logger and write to stdout
+func init() {
+	gnarkLog.Disable()
+}
+
+func Groth16Verify(vkBytes []byte, proofBytes []byte, inputsBytes []byte, curve ecc.ID) (bool, error) {
+	var vk gnark.VerifyingKey
+	var proof gnark.Proof
+
+	switch curve {
+	case ecc.BLS12_381:
+		bls12381vk, err := bls12381.FromBytesToVerifyingKey(vkBytes)
+		if err != nil {
+			return false, err
+		}
+		vk = bls12381vk
+
+		bls12381proof, err := bls12381.FromBytesToProof(proofBytes)
+		if err != nil {
+			return false, err
+		}
+		proof = bls12381proof
+	case ecc.BN254:
+		bn256vk, err := bn256.FromBytesToVerifyingKey(vkBytes)
+		if err != nil {
+			return false, err
+		}
+		vk = bn256vk
+
+		bn256proof, err := bn256.FromBytesToProof(proofBytes)
+		if err != nil {
+			return false, err
+		}
+		proof = bn256proof
+	case ecc.UNKNOWN:
+		return false, errors.Errorf("unknown elliptic curve")
+	case ecc.BLS12_377, ecc.BLS24_315, ecc.BLS24_317, ecc.BW6_761, ecc.BW6_633, ecc.STARK_CURVE,
+		ecc.SECP256K1, ecc.GRUMPKIN:
+		return false, fmt.Errorf("unsupported curve %s", curve)
+	default:
+		return false, errors.Errorf("unknown elliptic curve")
+	}
+
+	var buf bytes.Buffer
+	buf.Grow(8 + 4 + len(inputsBytes))
+	// Add 8 bytes for correct reading
+	// Gnark witness has two addition number in the start
+	// These numbers aren't used for verification
+	buf.Write(make([]byte, 8))
+	err := binary.Write(&buf, binary.BigEndian, uint32(len(inputsBytes)/(fr.Limbs*sizeUint64)))
+	if err != nil {
+		return false, err
+	}
+	buf.Write(inputsBytes)
+	wit, err := witness.New(curve.ScalarField())
+	if err != nil {
+		return false, err
+	}
+	err = wit.UnmarshalBinary(buf.Bytes())
+	if err != nil {
+		return false, err
+	}
+	err = gnark.Verify(proof, vk, wit)
+	if err != nil {
+		return false, nil
+	}
+	return true, nil
+}
