@@ -3,5 +3,12 @@
 // Empty string means same-origin (genesis.hearth.tech/api behind one proxy).
 // On localhost the API is assumed on :8080 (cmd/api's default listenAddr);
 // localStorage.setItem("hearthApiBase", ...) still overrides everything.
-window.HEARTH_API_BASE = localStorage.getItem("hearthApiBase")
-  ?? (["localhost", "127.0.0.1"].includes(location.hostname) ? "http://" + location.hostname + ":8080" : "");
+(function () {
+  const stored = localStorage.getItem("hearthApiBase");
+  // A stored override must be an absolute http(s) URL; anything else (a
+  // typo'd host without a scheme, stray whitespace) silently breaks every
+  // fetch, so fall back to the default instead.
+  window.HEARTH_API_BASE = stored && /^https?:\/\//.test(stored.trim())
+    ? stored.trim().replace(/\/+$/, "")
+    : (["localhost", "127.0.0.1"].includes(location.hostname) ? "http://" + location.hostname + ":8080" : "");
+})();
