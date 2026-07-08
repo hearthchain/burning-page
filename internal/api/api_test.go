@@ -78,7 +78,7 @@ func newServer(t *testing.T, id identity) *httptest.Server {
 		"height": 4000010, "timestamp": "2026-08-01T12:00:00Z", "status": "confirmed",
 	}))
 	meta := store.TransferMeta{Address: id.source, ReferenceHeight: 4000100, Status: "ok"}
-	require.NoError(t, store.WriteTransfers(filepath.Join(dataDir, "transfers", id.source+".jsonl"), meta,
+	require.NoError(t, store.WriteTransfers(filepath.Join(dataDir, "transfers", "waves", id.source+".jsonl"), meta,
 		[]json.RawMessage{depositTx(id.source, 200000000000, "3000000@1647216000000"), json.RawMessage(burnTx)}))
 
 	j, err := journal.Load("../../data/journal/waves.csv")

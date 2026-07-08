@@ -123,13 +123,14 @@ func TestPollDetectsCrossChecksAndWritesArtifacts(t *testing.T) {
 	assert.Equal(t, "pending_confirmations", byID["FreshBurn9999"].Status,
 		"a fresh burn is visible immediately, credit waits for maturity")
 
-	aliceMeta, _, err := store.ReadTransfers(filepath.Join(cfg.DataDir, "transfers", alice+".jsonl"))
+	aliceMeta, _, err := store.ReadTransfers(filepath.Join(cfg.DataDir, "transfers", "waves", alice+".jsonl"))
 	require.NoError(t, err)
 	assert.Equal(t, "ok", aliceMeta.Status)
+	assert.Equal(t, "waves", aliceMeta.Chain)
 	assert.Equal(t, int64(99900000), aliceMeta.Recomputed)
 	assert.Equal(t, uint64(99900000), aliceMeta.NodeBalance)
 
-	carolMeta, _, err := store.ReadTransfers(filepath.Join(cfg.DataDir, "transfers", carol+".jsonl"))
+	carolMeta, _, err := store.ReadTransfers(filepath.Join(cfg.DataDir, "transfers", "waves", carol+".jsonl"))
 	require.NoError(t, err)
 	assert.Equal(t, "unsupported", carolMeta.Status)
 	assert.Contains(t, carolMeta.Reason, "type 8")
@@ -150,7 +151,7 @@ func TestPollIsIdempotentAcrossRestarts(t *testing.T) {
 	require.NoError(t, err)
 	assert.Len(t, records, 3, "rescan must skip already-recorded states")
 
-	entries, err := os.ReadDir(filepath.Join(cfg.DataDir, "transfers"))
+	entries, err := os.ReadDir(filepath.Join(cfg.DataDir, "transfers", "waves"))
 	require.NoError(t, err)
 	assert.Len(t, entries, 2)
 }

@@ -14,6 +14,7 @@ import (
 // node exactly; anything else blocks the address's credits to manual review.
 type TransferMeta struct {
 	Address         string    `json:"address"`
+	Chain           string    `json:"chain"`
 	FetchedAt       time.Time `json:"fetchedAt"`
 	ReferenceHeight uint64    `json:"referenceHeight"`
 	NodeBalance     uint64    `json:"nodeBalanceBaseUnits"`

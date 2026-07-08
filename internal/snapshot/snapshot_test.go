@@ -69,7 +69,7 @@ func writeArtifacts(t *testing.T) (dataDir, hearth, strangerSource string) {
 			itoa(burnAmount) + `,"fee":100000,"feeAssetId":null,"timestamp":1754049600000,"height":4000010}`
 		meta := store.TransferMeta{Address: src, ReferenceHeight: 4000100, Status: "ok"}
 		require.NoError(t, store.WriteTransfers(
-			filepath.Join(dataDir, "transfers", src+".jsonl"), meta,
+			filepath.Join(dataDir, "transfers", "waves", src+".jsonl"), meta,
 			[]jsonRaw{jsonRaw(depositTx), jsonRaw(burnTx)}))
 	}
 	writeHistory(source, "B1", 200_000_000_000, 100_000_000_000)

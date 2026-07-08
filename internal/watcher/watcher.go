@@ -109,7 +109,7 @@ func (w *Watcher) processBurn(ctx context.Context, b chain.Burn, latest map[stri
 // ensureHistory fetches, verifies and persists the transfer history of a
 // source address once; the artifact is the credit formula's input.
 func (w *Watcher) ensureHistory(ctx context.Context, source string, tip uint64) error {
-	path := filepath.Join(w.Cfg.DataDir, "transfers", source+".jsonl")
+	path := filepath.Join(w.Cfg.DataDir, "transfers", w.Adapter.Name(), source+".jsonl")
 	if _, err := os.Stat(path); err == nil {
 		return nil
 	}
@@ -120,6 +120,7 @@ func (w *Watcher) ensureHistory(ctx context.Context, source string, tip uint64) 
 	}
 	meta := store.TransferMeta{
 		Address:         source,
+		Chain:           w.Adapter.Name(),
 		FetchedAt:       time.Now().UTC(),
 		ReferenceHeight: h.ReferenceHeight,
 		NodeBalance:     h.NodeBalance,

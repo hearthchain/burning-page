@@ -109,7 +109,7 @@ const (
 func creditSource(
 	dataDir string, j *journal.Journal, source string, burns []burnRow, reg *bindings.Registry,
 ) ([]evidence.Bundle, *big.Int, string, error) {
-	transfersPath := filepath.Join(dataDir, "transfers", source+".jsonl")
+	transfersPath := filepath.Join(dataDir, "transfers", burns[0].Chain, source+".jsonl")
 	meta, txs, err := store.ReadTransfers(transfersPath)
 	if err != nil || meta.Status != "ok" {
 		return nil, nil, sourceBlocked, nil //nolint:nilerr // a missing or failed history blocks the source, not the snapshot
