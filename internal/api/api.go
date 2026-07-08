@@ -18,6 +18,7 @@ import (
 
 	"github.com/hearthchain/burning-page/internal/binding"
 	"github.com/hearthchain/burning-page/internal/bindings"
+	"github.com/hearthchain/burning-page/internal/chain/chains"
 	"github.com/hearthchain/burning-page/internal/chain/waves"
 	"github.com/hearthchain/burning-page/internal/config"
 	"github.com/hearthchain/burning-page/internal/credit"
@@ -112,7 +113,12 @@ func (s *Server) preview(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusUnprocessableEntity, "unsupported_history", err.Error())
 		return
 	}
-	total, perLayer, err := credit.Compute(profile, s.journal)
+	units, err := chains.BaseUnits("waves")
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, "config_error", err.Error())
+		return
+	}
+	total, perLayer, err := credit.Compute(profile, s.journal, units)
 	if err != nil {
 		writeError(w, http.StatusUnprocessableEntity, "unsupported_history", err.Error())
 		return

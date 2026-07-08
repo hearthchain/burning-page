@@ -11,6 +11,7 @@ import (
 	"sort"
 
 	"github.com/hearthchain/burning-page/internal/bindings"
+	"github.com/hearthchain/burning-page/internal/chain/chains"
 	"github.com/hearthchain/burning-page/internal/chain/waves"
 	"github.com/hearthchain/burning-page/internal/credit"
 	"github.com/hearthchain/burning-page/internal/evidence"
@@ -134,7 +135,11 @@ func creditSource(
 	credited := new(big.Int)
 	bundles := make([]evidence.Bundle, 0, len(burns))
 	for _, b := range burns {
-		totalMic, perLayer, cErr := credit.Compute(consumed[b.TxID], j)
+		units, uErr := chains.BaseUnits(b.Chain)
+		if uErr != nil {
+			return nil, nil, "", fmt.Errorf("snapshot: %s: %w", b.TxID, uErr)
+		}
+		totalMic, perLayer, cErr := credit.Compute(consumed[b.TxID], j, units)
 		if cErr != nil {
 			return nil, nil, "", fmt.Errorf("snapshot: %s: %w", b.TxID, cErr)
 		}
