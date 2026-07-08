@@ -41,7 +41,7 @@ type burnRow struct {
 	TxID   string `json:"txId"`
 	Chain  string `json:"chain"`
 	Source string `json:"source"`
-	Amount uint64 `json:"amountWavelets"`
+	Amount uint64 `json:"amountBaseUnits"`
 	Height uint64 `json:"height"`
 	Status string `json:"status"`
 }
@@ -142,7 +142,7 @@ func creditSource(
 			TxID:            b.TxID,
 			Chain:           b.Chain,
 			Source:          source,
-			AmountWavelets:  b.Amount,
+			AmountBaseUnits: b.Amount,
 			Height:          b.Height,
 			Layers:          perLayer,
 			CreditMicro:     totalMic.String(),

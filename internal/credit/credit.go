@@ -19,11 +19,11 @@ const wavesInWavelets = 100_000_000
 
 // LayerCredit is the per-layer breakdown of a credit, evidence-bundle ready.
 type LayerCredit struct {
-	AmountWavelets uint64 `json:"amountWavelets"`
-	Since          string `json:"since"`
-	WeekEnd        string `json:"weekEnd"`
-	PriceMicroUSD  uint64 `json:"priceMicroUsd"`
-	CreditMicro    string `json:"creditMicro"`
+	AmountBaseUnits uint64 `json:"amountBaseUnits"`
+	Since           string `json:"since"`
+	WeekEnd         string `json:"weekEnd"`
+	PriceMicroUSD   uint64 `json:"priceMicroUsd"`
+	CreditMicro     string `json:"creditMicro"`
 }
 
 // Compute prices the consumed layers against the journal and returns the
@@ -41,11 +41,11 @@ func Compute(consumed []layers.Layer, j *journal.Journal) (*big.Int, []LayerCred
 		c.Quo(c, big.NewInt(wavesInWavelets))
 		total.Add(total, c)
 		perLayer = append(perLayer, LayerCredit{
-			AmountWavelets: l.Amount,
-			Since:          l.Since.Format("2006-01-02T15:04:05Z07:00"),
-			WeekEnd:        weekEnd,
-			PriceMicroUSD:  price,
-			CreditMicro:    c.String(),
+			AmountBaseUnits: l.Amount,
+			Since:           l.Since.Format("2006-01-02T15:04:05Z07:00"),
+			WeekEnd:         weekEnd,
+			PriceMicroUSD:   price,
+			CreditMicro:     c.String(),
 		})
 	}
 	return total, perLayer, nil

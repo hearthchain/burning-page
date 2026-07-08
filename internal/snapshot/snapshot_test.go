@@ -55,7 +55,7 @@ func writeArtifacts(t *testing.T) (dataDir, hearth, strangerSource string) {
 
 	burn := func(id, src string, amount uint64, height uint64) map[string]any {
 		return map[string]any{
-			"txId": id, "chain": "waves", "source": src, "amountWavelets": amount,
+			"txId": id, "chain": "waves", "source": src, "amountBaseUnits": amount,
 			"height": height, "timestamp": "2026-08-01T12:00:00Z", "status": "confirmed",
 		}
 	}

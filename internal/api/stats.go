@@ -13,9 +13,9 @@ import (
 // counters. Wavelet totals are strings: they can exceed what JSON numbers
 // carry losslessly.
 type chainStats struct {
-	BurnedWavelets  string         `json:"burnedWavelets"`
-	PendingWavelets string         `json:"pendingWavelets"`
-	BurnsByStatus   map[string]int `json:"burnsByStatus"`
+	BurnedBaseUnits  string         `json:"burnedBaseUnits"`
+	PendingBaseUnits string         `json:"pendingBaseUnits"`
+	BurnsByStatus    map[string]int `json:"burnsByStatus"`
 }
 
 // stats serves the front-page counters. Everything is recomputed from the
@@ -72,7 +72,7 @@ func (s *Server) chainTotals() (map[string]*chainStats, error) {
 			accs[row.Chain] = a
 		}
 		a.byStatus[row.Status]++
-		amount := new(big.Int).SetUint64(row.AmountWavelets)
+		amount := new(big.Int).SetUint64(row.AmountBaseUnits)
 		switch row.Status {
 		case statusConfirmed:
 			a.burned.Add(a.burned, amount)
@@ -83,9 +83,9 @@ func (s *Server) chainTotals() (map[string]*chainStats, error) {
 	out := make(map[string]*chainStats, len(accs))
 	for chain, a := range accs {
 		out[chain] = &chainStats{
-			BurnedWavelets:  a.burned.String(),
-			PendingWavelets: a.pending.String(),
-			BurnsByStatus:   a.byStatus,
+			BurnedBaseUnits:  a.burned.String(),
+			PendingBaseUnits: a.pending.String(),
+			BurnsByStatus:    a.byStatus,
 		}
 	}
 	return out, nil

@@ -20,7 +20,7 @@
     const cells = [
       [String(layer.since).slice(0, 10), ""], // RFC3339 timestamp: keep the date
       [layer.weekEnd, ""],
-      [fmtWaves(String(layer.amountWavelets)), "num"],
+      [fmtWaves(String(layer.amountBaseUnits)), "num"],
       [fmtMicroUsd(String(layer.priceMicroUsd)), "num"],
       [fmtUnits(layer.creditMicro, 6), "num"],
     ];

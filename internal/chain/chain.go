@@ -20,7 +20,7 @@ type Burn struct {
 	TxID      string          `json:"txId"`
 	Chain     string          `json:"chain"`
 	Source    string          `json:"source"`
-	Amount    uint64          `json:"amountWavelets"`
+	Amount    uint64          `json:"amountBaseUnits"`
 	Height    uint64          `json:"height"`
 	Timestamp time.Time       `json:"timestamp"`
 	Raw       json.RawMessage `json:"raw"`
@@ -41,8 +41,8 @@ type History struct {
 	Address         string  `json:"address"`
 	Deltas          []Delta `json:"deltas"`
 	ReferenceHeight uint64  `json:"referenceHeight"`
-	NodeBalance     uint64  `json:"nodeBalanceWavelets"`
-	Recomputed      int64   `json:"recomputedWavelets"`
+	NodeBalance     uint64  `json:"nodeBalanceBaseUnits"`
+	Recomputed      int64   `json:"recomputedBaseUnits"`
 	Status          string  `json:"status"`
 	Reason          string  `json:"reason,omitempty"`
 }

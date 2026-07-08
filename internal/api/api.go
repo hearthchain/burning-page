@@ -192,12 +192,12 @@ type confirmedBurnView struct {
 // pendingBurnView is a burn that is visible but not yet credited: detected on
 // chain, waiting for confirmation depth or for the cross-check.
 type pendingBurnView struct {
-	TxID           string `json:"txId"`
-	Chain          string `json:"chain"`
-	Source         string `json:"source"`
-	AmountWavelets uint64 `json:"amountWavelets"`
-	Height         uint64 `json:"height"`
-	Status         string `json:"status"`
+	TxID            string `json:"txId"`
+	Chain           string `json:"chain"`
+	Source          string `json:"source"`
+	AmountBaseUnits uint64 `json:"amountBaseUnits"`
+	Height          uint64 `json:"height"`
+	Status          string `json:"status"`
 }
 
 // pendingBurns lists the not-yet-confirmed burns whose source is bound to the

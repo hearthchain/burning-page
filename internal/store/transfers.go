@@ -16,8 +16,8 @@ type TransferMeta struct {
 	Address         string    `json:"address"`
 	FetchedAt       time.Time `json:"fetchedAt"`
 	ReferenceHeight uint64    `json:"referenceHeight"`
-	NodeBalance     uint64    `json:"nodeBalanceWavelets"`
-	Recomputed      int64     `json:"recomputedWavelets"`
+	NodeBalance     uint64    `json:"nodeBalanceBaseUnits"`
+	Recomputed      int64     `json:"recomputedBaseUnits"`
 	Status          string    `json:"status"`
 	Reason          string    `json:"reason,omitempty"`
 }

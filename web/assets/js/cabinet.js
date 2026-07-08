@@ -23,7 +23,7 @@
       [b.txId, ""],
       [b.chain, ""],
       [b.source, ""],
-      [fmtWaves(String(b.amountWavelets)), "num"],
+      [fmtWaves(String(b.amountBaseUnits)), "num"],
       [String(b.height), "num"],
       [b.creditMicro ? fmtUnits(b.creditMicro, 6) : "·", "num"],
     ];

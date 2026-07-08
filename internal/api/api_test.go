@@ -74,7 +74,7 @@ func newServer(t *testing.T, id identity) *httptest.Server {
 	// One confirmed burn from id.source with a verified transfer history.
 	burnTx := `{"type":4,"id":"B1","sender":"` + id.source + `","recipient":"3PHearthBurnXXXXXXXXXXXXXXXXXZgJXd1","assetId":null,"amount":100000000000,"fee":100000,"feeAssetId":null,"timestamp":1754049600000,"height":4000010}`
 	require.NoError(t, store.AppendJSONL(filepath.Join(dataDir, "burns.jsonl"), map[string]any{
-		"txId": "B1", "chain": "waves", "source": id.source, "amountWavelets": 100000000000,
+		"txId": "B1", "chain": "waves", "source": id.source, "amountBaseUnits": 100000000000,
 		"height": 4000010, "timestamp": "2026-08-01T12:00:00Z", "status": "confirmed",
 	}))
 	meta := store.TransferMeta{Address: id.source, ReferenceHeight: 4000100, Status: "ok"}
@@ -232,7 +232,7 @@ func TestAddressShowsPendingBurnsWithoutCredit(t *testing.T) {
 
 	// A fresh burn recorded by the watcher before maturity.
 	require.NoError(t, store.AppendJSONL(filepath.Join(serverDataDir, "burns.jsonl"), map[string]any{
-		"txId": "Fresh1", "chain": "waves", "source": id.source, "amountWavelets": 10000000,
+		"txId": "Fresh1", "chain": "waves", "source": id.source, "amountBaseUnits": 10000000,
 		"height": 4000900, "timestamp": "2026-08-01T13:00:00Z", "status": "pending_confirmations",
 	}))
 
