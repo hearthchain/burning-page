@@ -32,6 +32,8 @@ make all        # vendor + tidy + fmt-check + lint + test + build
 make test       # go test -mod=vendor -race with coverage
 make lint       # go vet + golangci-lint v2 strict (.golangci.yml)
 make journal    # regenerate data/journal/{waves,eos}.csv (headers included)
+make web        # compile web-src/*.ts -> web/assets/js (tsc, pinned)
+make web-check  # rebuild + fail on drift (mirrors the CI web job)
 ```
 
 ## Working rules
@@ -39,6 +41,7 @@ make journal    # regenerate data/journal/{waves,eos}.csv (headers included)
 - TDD per the coding-skills plugin: one failing test, minimal code, refactor, commit. Table-driven tests with testify, external test packages, vendored deps.
 - Branch `develop`; never push `main` (hook-blocked). Commit subject: capital start, ≤72 chars, no trailing period, no `Co-Authored-By` or any trailers (hook-enforced). Commits only from the `swell-a2a` identity.
 - Framing in ALL user-facing copy (spec appendix): loyalty converts to a share of the new network; credit converts 1:1 to HRTH by the published formula; floating supply set by turnout; NEVER imply a dollar floor or compensation.
+- Frontend JS is compiled from `web-src/*.ts` (tsc, module "none", plain global scripts): edit the .ts, never `web/assets/js/*.js`; commit the regenerated JS with the .ts change.
 - Never ask for seed phrases anywhere; signing happens only in the user's wallet extension. Keeper injects into http(s) pages only, never file://.
 - Integer-only arithmetic in the credit path (micro-USD uint64, micro-HRTH big.Int); truncation is the published rule.
 - Markdown: YAML frontmatter with `purpose:`, no hard-wrapped prose (one line per paragraph).

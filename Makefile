@@ -1,6 +1,6 @@
 SOURCE_DIRS := ./cmd ./internal
 
-.PHONY: vendor tidy fmt fmt-check lint test build all journal
+.PHONY: vendor tidy fmt fmt-check lint test build all journal web web-check
 
 vendor:
 	go mod vendor
@@ -24,6 +24,15 @@ build:
 	go build -mod=vendor -trimpath -ldflags "-s -w -buildid=" -o bin/ ./cmd/...
 
 all: vendor tidy fmt-check lint test build
+
+# Compile the TypeScript sources in web-src/ into web/assets/js (compiled JS
+# is committed so the site deploys with no build step).
+web:
+	npm ci --prefix web-src
+	npm run --prefix web-src build
+
+web-check: web
+	git diff --exit-code -- web/assets/js
 
 # Re-export the canonical weekly price journals from the cto-agent DB (see data/journal/README.md).
 # cmc_id 1274 = WAVES; 1765 = EOS, whose series continues as Vaulta (A) after the rebrand.
