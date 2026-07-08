@@ -13,7 +13,6 @@ import (
 	"github.com/hearthchain/burning-page/internal/chain/waves"
 	"github.com/hearthchain/burning-page/internal/config"
 	"github.com/hearthchain/burning-page/internal/journal"
-	"github.com/hearthchain/burning-page/internal/watcher"
 )
 
 const readHeaderTimeout = 10 * time.Second
@@ -42,7 +41,7 @@ func run() int {
 	}
 	var node api.Node
 	if *fixture != "" {
-		node = watcher.NewFileNode(*fixture)
+		node = waves.NewFileNode(*fixture)
 	} else {
 		node = waves.NewClient(cfg.Nodes.Primary)
 	}

@@ -12,6 +12,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/hearthchain/burning-page/internal/chain"
+	"github.com/hearthchain/burning-page/internal/chain/waves"
 	"github.com/hearthchain/burning-page/internal/config"
 	"github.com/hearthchain/burning-page/internal/store"
 	"github.com/hearthchain/burning-page/internal/watcher"
@@ -85,6 +86,10 @@ func testNode(t *testing.T) *fakeNode {
 	}
 }
 
+func testAdapter(node *fakeNode) *waves.Adapter {
+	return &waves.Adapter{Primary: node, Secondary: node, BurnAddress: burnAddr}
+}
+
 func testConfig(t *testing.T) config.Config {
 	t.Helper()
 	var cfg config.Config
@@ -101,7 +106,7 @@ func testConfig(t *testing.T) config.Config {
 func TestPollDetectsCrossChecksAndWritesArtifacts(t *testing.T) {
 	node := testNode(t)
 	cfg := testConfig(t)
-	w := &watcher.Watcher{Primary: node, Secondary: node, Cfg: cfg}
+	w := &watcher.Watcher{Adapter: testAdapter(node), Cfg: cfg}
 
 	require.NoError(t, w.Poll(t.Context()))
 
@@ -134,11 +139,11 @@ func TestPollIsIdempotentAcrossRestarts(t *testing.T) {
 	node := testNode(t)
 	cfg := testConfig(t)
 
-	w := &watcher.Watcher{Primary: node, Secondary: node, Cfg: cfg}
+	w := &watcher.Watcher{Adapter: testAdapter(node), Cfg: cfg}
 	require.NoError(t, w.Poll(t.Context()))
 
 	// A fresh watcher over the same data dir must not duplicate anything.
-	w2 := &watcher.Watcher{Primary: node, Secondary: node, Cfg: cfg}
+	w2 := &watcher.Watcher{Adapter: testAdapter(node), Cfg: cfg}
 	require.NoError(t, w2.Poll(t.Context()))
 
 	records, err := store.ReadJSONL[watcher.BurnRecord](filepath.Join(cfg.DataDir, "burns.jsonl"))
@@ -153,7 +158,7 @@ func TestPollIsIdempotentAcrossRestarts(t *testing.T) {
 func TestPendingBurnUpgradesWhenMature(t *testing.T) {
 	node := testNode(t)
 	cfg := testConfig(t)
-	w := &watcher.Watcher{Primary: node, Secondary: node, Cfg: cfg}
+	w := &watcher.Watcher{Adapter: testAdapter(node), Cfg: cfg}
 	require.NoError(t, w.Poll(t.Context()))
 
 	node.tip = 4000300 // FreshBurn9999 at 4000150 now has >100 confirmations

@@ -30,15 +30,15 @@ func run() int {
 		slog.Error("config", "err", err)
 		return 1
 	}
-	var primary, secondary watcher.Node
+	adapter := &waves.Adapter{BurnAddress: cfg.BurnAddress}
 	if *fixture != "" {
-		node := watcher.NewFileNode(*fixture)
-		primary, secondary = node, node
+		node := waves.NewFileNode(*fixture)
+		adapter.Primary, adapter.Secondary = node, node
 	} else {
-		primary = waves.NewClient(cfg.Nodes.Primary)
-		secondary = waves.NewClient(cfg.Nodes.Secondary)
+		adapter.Primary = waves.NewClient(cfg.Nodes.Primary)
+		adapter.Secondary = waves.NewClient(cfg.Nodes.Secondary)
 	}
-	w := &watcher.Watcher{Primary: primary, Secondary: secondary, Cfg: cfg}
+	w := &watcher.Watcher{Adapter: adapter, Cfg: cfg}
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
