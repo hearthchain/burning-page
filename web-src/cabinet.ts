@@ -4,7 +4,7 @@
 // No query shows the entry form; with an address it renders credit, bindings
 // and the burn table from GET /api/address/{hearth}.
 (function () {
-  const { apiGet, fmtWaves, fmtUnits, errorMessage, degrade } = window.HearthAPI;
+  const { apiGet, fmtUnits, errorMessage, degrade } = window.HearthAPI;
   const el = (id: string) => document.getElementById(id) as HTMLElement;
 
   const params = new URLSearchParams(location.search);
@@ -17,6 +17,8 @@
   });
 
   const STATUS_PILL: Record<string, string> = { confirmed: "pill-ok", mismatch: "pill-err" };
+  const CHAIN_DECIMALS: Record<string, number> = { waves: 8, eos: 4 };
+  const CHAIN_TICKER: Record<string, string> = { waves: "WAVES", eos: "A" };
 
   function burnRow(b: CabinetBurn) {
     const tr = document.createElement("tr");
@@ -24,7 +26,7 @@
       [b.txId, ""],
       [b.chain, ""],
       [b.source, ""],
-      [fmtWaves(String(b.amountBaseUnits)), "num"],
+      [fmtUnits(String(b.amountBaseUnits), CHAIN_DECIMALS[b.chain] || 8) + " " + (CHAIN_TICKER[b.chain] || b.chain), "num"],
       [String(b.height), "num"],
       [b.creditMicro ? fmtUnits(b.creditMicro, 6) : "·", "num"],
     ];
@@ -49,6 +51,7 @@
     el("cab-addr").textContent = body.hearthAddress;
     el("cab-credit").textContent = fmtUnits(body.minimumCreditMicro, 6);
     (el("cab-bind-link") as HTMLAnchorElement).href = "../burn/waves/?hearth=" + encodeURIComponent(body.hearthAddress) + "#bind";
+    (el("cab-bind-link-eos") as HTMLAnchorElement).href = "../burn/eos/?hearth=" + encodeURIComponent(body.hearthAddress) + "#bind";
 
     const bindings = el("cab-bindings");
     if (body.bindings.length === 0) {
