@@ -17,12 +17,13 @@ Keep this file short; when you update it, ALWAYS be very laconic.
 
 ## Verified facts (don't re-derive)
 
-- Waves burn address: `3PHearthBurnXXXXXXXXXXXXXXXXXZgJXd1` (provably unspendable vanity, pinned in `internal/chain/waves/address.go`).
-- Binding message `hearth-genesis-binding:v1:<source>:<hearth>`; formats `raw` (bindsign CLI) and `keeper-v1` (Keeper signCustomData envelope `[255,255,255,1] ++ msg`), proven live against a real Keeper extension.
-- API: `GET /api/preview/waves/{source}`, `GET /api/address/{hearth}`, `GET /api/stats`, `POST /api/bindings`, `GET /bind`. Credit fields are `minimumCredit`/`minimumCreditMicro`: the max weekly-average price can only grow until snapshot freeze, so the figure is a floor in HRTH terms. CORS only for origins in config `allowedOrigins` (empty = none).
-- Burn statuses: pending_confirmations → pending_crosscheck → confirmed | mismatch; burns show immediately, only confirmed ones are credited. Cross-check runs against two independent public nodes.
-- History rule: transfer-like tx types only (1/2/4/11); any other type blocks the address to manual review. Lease support is a deliberate wave-2 item.
-- Local `config.json` (gitignored) currently runs with `confirmations: 0` for development; before network launch wipe `data/` and re-run the whole window with a real confirmation depth.
+- Waves burn address: `3PHearthBurnXXXXXXXXXXXXXXXXXZgJXd1` (provably unspendable vanity, pinned in `internal/chain/waves/address.go`). EOS burn account: `eosio.null`; both `A` (core.vaulta) and legacy `EOS` (eosio.token) credited 1:1, precision 4, combined-balance histories (swaps net to zero).
+- Binding message `hearth-genesis-binding:v1:<source>:<hearth>`; formats `raw` (bindsign CLI) and `keeper-v1` (Keeper signCustomData envelope `[255,255,255,1] ++ msg`), proven live against a real Keeper extension. EOS binds via that exact message as a transfer memo to eosio.null (on the burn itself or a later 0.0001 A dust transfer; latest wins); watcher-harvested as `eos-memo-v1` through `Registry.AddVerified`; `POST /api/bindings` MUST keep rejecting that format.
+- EOS sources: chain API primary (EOS Nation), Greymass v1 history secondary (cross-check), Hyperion `historyAPI` (EOS Rio; only free index, floor block 300,000,000 = 2023-03-18). Pre-floor balances = synthetic opening layer at the floor (truncated-floor rule; credits only ever grow). `confirmations: 0` because Height() is LIB (Savanna, ~1s finality).
+- API: `GET /api/preview/{chain}/{source}`, `GET /api/address/{hearth}`, `GET /api/stats` (`windows` per chain), `POST /api/bindings`, `GET /bind`. Credit fields are `minimumCredit`/`minimumCreditMicro`: the max weekly-average price can only grow until snapshot freeze, so the figure is a floor in HRTH terms. CORS only for origins in config `allowedOrigins` (empty = none).
+- Burn statuses: pending_confirmations → pending_crosscheck → confirmed | mismatch; burns show immediately, only confirmed ones are credited. Cross-check runs against an independent second source per chain.
+- History rules: Waves transfer-like tx types only (1/2/4/11); EOS native-token transfers only, 50k-action cap, double balance read. Anything unprovable blocks the address to manual review.
+- Config is per-chain blocks under `chains`; the watcher runs one process per chain (`-chain waves|eos`). Local `config.json` (gitignored) currently runs with `confirmations: 0` for development; before network launch wipe `data/` and re-run the whole window with a real confirmation depth.
 
 ## Commands
 
@@ -30,7 +31,7 @@ Keep this file short; when you update it, ALWAYS be very laconic.
 make all        # vendor + tidy + fmt-check + lint + test + build
 make test       # go test -mod=vendor -race with coverage
 make lint       # go vet + golangci-lint v2 strict (.golangci.yml)
-make journal    # regenerate data/journal/waves.csv (header included)
+make journal    # regenerate data/journal/{waves,eos}.csv (headers included)
 ```
 
 ## Working rules
