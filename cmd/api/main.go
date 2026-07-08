@@ -47,9 +47,9 @@ func run() int {
 		var adapter chain.Adapter
 		var aErr error
 		if *fixture != "" {
-			adapter, aErr = chains.NewFixture(name, *fixture, cc)
+			adapter, aErr = chains.NewFixture(name, *fixture, cc, cfg.HearthSchemeByte())
 		} else {
-			adapter, aErr = chains.New(name, cc)
+			adapter, aErr = chains.New(name, cc, cfg.HearthSchemeByte())
 		}
 		if aErr != nil {
 			slog.Error("adapter", "chain", name, "err", aErr)

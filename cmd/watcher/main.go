@@ -39,9 +39,9 @@ func run() int {
 	}
 	var adapter chain.Adapter
 	if *fixture != "" {
-		adapter, err = chains.NewFixture(*chainName, *fixture, cc)
+		adapter, err = chains.NewFixture(*chainName, *fixture, cc, cfg.HearthSchemeByte())
 	} else {
-		adapter, err = chains.New(*chainName, cc)
+		adapter, err = chains.New(*chainName, cc, cfg.HearthSchemeByte())
 	}
 	if err != nil {
 		slog.Error("adapter", "err", err)
