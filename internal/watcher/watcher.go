@@ -35,7 +35,7 @@ type Node interface {
 type BurnRecord struct {
 	chain.Burn
 	Status     string        `json:"status"`
-	CrossCheck waves.Verdict `json:"crossCheck"`
+	CrossCheck chain.Verdict `json:"crossCheck"`
 	DetectedAt time.Time     `json:"detectedAt"`
 }
 

@@ -34,6 +34,23 @@ type Delta struct {
 	Amount    int64     `json:"amount"`
 }
 
+// Status is the verdict of a delta reconstruction: Kind "ok" or "unsupported"
+// (the history contains a transaction the adapter does not interpret; the
+// address is blocked to manual review rather than risking a wrong credit).
+type Status struct {
+	Kind   string
+	Reason string
+}
+
+// Verdict is the outcome of a double-source check: confirmed, mismatch (with
+// the diverging field names) or pending_crosscheck while the second source has
+// not yet buried the burn under enough confirmations.
+type Verdict struct {
+	Status     string   `json:"status"`
+	Node       string   `json:"node,omitempty"`
+	Mismatches []string `json:"mismatchFields,omitempty"`
+}
+
 // History is the reconstructed balance-delta history of one address together
 // with the safety-invariant verdict. Status is "ok" only when the recomputed
 // balance exactly matches the node-reported balance at ReferenceHeight.
