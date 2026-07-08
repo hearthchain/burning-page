@@ -25,9 +25,14 @@ build:
 
 all: vendor tidy fmt-check lint test build
 
-# Re-export the canonical weekly price journal from the cto-agent DB (see data/journal/README.md).
+# Re-export the canonical weekly price journals from the cto-agent DB (see data/journal/README.md).
+# cmc_id 1274 = WAVES; 1765 = EOS, whose series continues as Vaulta (A) after the rebrand.
 journal:
 	echo "week_end,price_avg_usd" > data/journal/waves.csv
 	sqlite3 -readonly -csv ../../aggelion/cto-agent/data/cmc_history.db \
 	  "SELECT substr(week_end,1,4)||'-'||substr(week_end,5,2)||'-'||substr(week_end,7,2) AS week_end, price_avg FROM price_weekly WHERE cmc_id=1274 ORDER BY week_end" \
 	  >> data/journal/waves.csv
+	echo "week_end,price_avg_usd" > data/journal/eos.csv
+	sqlite3 -readonly -csv ../../aggelion/cto-agent/data/cmc_history.db \
+	  "SELECT substr(week_end,1,4)||'-'||substr(week_end,5,2)||'-'||substr(week_end,7,2) AS week_end, price_avg FROM price_weekly WHERE cmc_id=1765 ORDER BY week_end" \
+	  >> data/journal/eos.csv
