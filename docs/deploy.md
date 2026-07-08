@@ -4,7 +4,7 @@ purpose: Remote API deployment, GitHub variables and one-time server bootstrap f
 
 # Deploying the API
 
-`.github/workflows/deploy-api.yml` builds linux/amd64 binaries and ships them to the server over SSH on every backend push to `develop` (plus manual dispatch). It is inert until `DEPLOY_HOST` is set. Local development is unaffected: the frontend on localhost targets `localhost:8080` by itself, and `make build` / `go run ./cmd/api` work as before.
+`.github/workflows/deploy-api.yml` builds linux/amd64 binaries and ships them to the server over SSH on every backend push to `main`, i.e. on merged PRs (plus manual dispatch). It is inert until `DEPLOY_HOST` is set. Local development is unaffected: the frontend on localhost targets `localhost:8080` by itself, and `make build` / `go run ./cmd/api` work as before.
 
 ## GitHub side (Settings → Secrets and variables → Actions)
 
